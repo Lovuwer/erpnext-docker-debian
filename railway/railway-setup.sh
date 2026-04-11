@@ -1,6 +1,14 @@
 #!/bin/bash
 set -e
 
+# ---------------------------------------------------------
+# FORCE NODE 20 ENVIRONMENT FOR POS AWESOME
+# ---------------------------------------------------------
+export NVM_DIR="/home/frappe/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+nvm use 20
+# ---------------------------------------------------------
+
 # -> Run entrypoint
 # somehow when specify custom cmd in railway,
 # it doesn't run entrypoint first, so we need to run it here.
