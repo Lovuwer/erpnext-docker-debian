@@ -71,7 +71,30 @@ COPY --chown=$systemUser --chmod=0755 /railway/railway-setup.sh /home/$systemUse
 COPY --chown=$systemUser --chmod=0755 /railway/railway-entrypoint.sh /usr/local/bin/railway-entrypoint.sh
 COPY --chown=$systemUser --chmod=0755 /railway/railway-cmd.sh /usr/local/bin/railway-cmd.sh
 
+# ---------------------------------------------------------
+# Custom Node Upgrade for POS Awesome
+# ---------------------------------------------------------
+# Switch to the frappe user where nvm is installed
+USER frappe
+
+# Install Node 20, set it as default, and reinstall yarn globally
+RUN bash -c "source ~/.nvm/nvm.sh \
+    && nvm install 20 \
+    && nvm alias default 20 \
+    && nvm use 20 \
+    && npm install -g yarn"
+
+# Switch back to root if the rest of your Dockerfile/entrypoint requires it
+USER root
+
+# [INSURANCE POLICY]: Force the system to prioritize the new Node 20 binaries globally
+RUN bash -c "ln -sf /home/frappe/.nvm/versions/node/v20.*/bin/node /usr/bin/node \
+    && ln -sf /home/frappe/.nvm/versions/node/v20.*/bin/npm /usr/bin/npm \
+    && ln -sf /home/frappe/.nvm/versions/node/v20.*/bin/yarn /usr/bin/yarn"
+# ---------------------------------------------------------
+
 ENTRYPOINT ["/usr/local/bin/railway-entrypoint.sh"]
 CMD ["/usr/local/bin/railway-cmd.sh"]
+
 
 EXPOSE 80
