@@ -1,0 +1,5 @@
+!/.gitignore
+/development_setup/data/
+/docs/_site/
+/.vscode
+!/.devcontainer*
